@@ -1,4 +1,8 @@
-x3/x3m_demo/_vscode
-x3/x3m_demo/build
-x3/x3m_demo/deps
-x3/data/
+x3/x3_cpp_demo/_vscode
+x3/x3_cpp_demo/build
+x3/x3_cpp_demo/deps
+x3/x3_cpp_demo/images
+
+x3/x3_object_detection/.vscode
+x3/x3_object_detection/build
+x3/x3_object_detection/deps
