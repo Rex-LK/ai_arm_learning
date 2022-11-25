@@ -1,0 +1,3 @@
+/work/ai_arm_learning/x3/x3_object_detection/build/CMakeFiles/rebuild_cache.dir
+/work/ai_arm_learning/x3/x3_object_detection/build/CMakeFiles/object_demo.dir
+/work/ai_arm_learning/x3/x3_object_detection/build/CMakeFiles/edit_cache.dir
