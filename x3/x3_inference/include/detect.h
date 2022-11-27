@@ -12,7 +12,7 @@ class Detect {
     Detect(){};
     virtual void   loadModel(std::string modelPath) = 0;
     virtual std::vector<float*>  inference() = 0;
-    virtual void   decodeBbox(int imgo_w, int imgo_h,float confidence_threshold) = 0;
+    virtual void   decodeBbox(int imgo_w, int imgo_h,float confidence_threshold,bool with_seg) = 0;
     int det_input_h;
     int det_input_w;
 

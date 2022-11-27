@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named yolov5-seg
+# Target rules for targets named seg_demo
 
 # Build rule for target.
-yolov5-seg: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 yolov5-seg
-.PHONY : yolov5-seg
+seg_demo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 seg_demo
+.PHONY : seg_demo
 
 # fast build rule for target.
-yolov5-seg/fast:
-	$(MAKE) -f CMakeFiles/yolov5-seg.dir/build.make CMakeFiles/yolov5-seg.dir/build
-.PHONY : yolov5-seg/fast
+seg_demo/fast:
+	$(MAKE) -f CMakeFiles/seg_demo.dir/build.make CMakeFiles/seg_demo.dir/build
+.PHONY : seg_demo/fast
 
 #=============================================================================
 # Target rules for targets named matrix
@@ -182,7 +182,7 @@ sample/yolov5-seg.o: sample/yolov5-seg.cpp.o
 
 # target to build an object file
 sample/yolov5-seg.cpp.o:
-	$(MAKE) -f CMakeFiles/yolov5-seg.dir/build.make CMakeFiles/yolov5-seg.dir/sample/yolov5-seg.cpp.o
+	$(MAKE) -f CMakeFiles/seg_demo.dir/build.make CMakeFiles/seg_demo.dir/sample/yolov5-seg.cpp.o
 .PHONY : sample/yolov5-seg.cpp.o
 
 sample/yolov5-seg.i: sample/yolov5-seg.cpp.i
@@ -191,7 +191,7 @@ sample/yolov5-seg.i: sample/yolov5-seg.cpp.i
 
 # target to preprocess a source file
 sample/yolov5-seg.cpp.i:
-	$(MAKE) -f CMakeFiles/yolov5-seg.dir/build.make CMakeFiles/yolov5-seg.dir/sample/yolov5-seg.cpp.i
+	$(MAKE) -f CMakeFiles/seg_demo.dir/build.make CMakeFiles/seg_demo.dir/sample/yolov5-seg.cpp.i
 .PHONY : sample/yolov5-seg.cpp.i
 
 sample/yolov5-seg.s: sample/yolov5-seg.cpp.s
@@ -200,7 +200,7 @@ sample/yolov5-seg.s: sample/yolov5-seg.cpp.s
 
 # target to generate assembly for a file
 sample/yolov5-seg.cpp.s:
-	$(MAKE) -f CMakeFiles/yolov5-seg.dir/build.make CMakeFiles/yolov5-seg.dir/sample/yolov5-seg.cpp.s
+	$(MAKE) -f CMakeFiles/seg_demo.dir/build.make CMakeFiles/seg_demo.dir/sample/yolov5-seg.cpp.s
 .PHONY : sample/yolov5-seg.cpp.s
 
 src/matrix.o: src/matrix.cpp.o
@@ -236,7 +236,7 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... yolov5-seg"
+	@echo "... seg_demo"
 	@echo "... edit_cache"
 	@echo "... matrix"
 	@echo "... rebuild_cache"

@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
     vector<float*> detRes = det->inference();
 
-    det->decodeBbox(img_ow, img_oh,confidence_threshold);
+    det->decodeBbox(img_ow, img_oh,confidence_threshold,false);
 
     std::vector<Bbox> boxes_res = nms(det->boxes_infer, 0.4);
     std::string save_det_path ="test.png";

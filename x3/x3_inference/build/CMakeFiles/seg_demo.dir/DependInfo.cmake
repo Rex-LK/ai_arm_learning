@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/work/ai_arm_learning/x3/x3_inference/sample/yolov5-seg.cpp" "/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/yolov5-seg.dir/sample/yolov5-seg.cpp.o"
+  "/work/ai_arm_learning/x3/x3_inference/sample/yolov5-seg.cpp" "/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/seg_demo.dir/sample/yolov5-seg.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

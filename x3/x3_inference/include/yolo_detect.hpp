@@ -15,7 +15,7 @@ class YoloDetect : public Detect{
     YoloDetect(int num_classes,int rows, int cols);
     virtual void loadModel(std::string modelPath) override;
     virtual std::vector<float*> inference() override;
-    virtual void decodeBbox(int imgo_w, int imgo_h,float confidence_threshold) override;
+    virtual void decodeBbox(int imgo_w, int imgo_h,float confidence_threshold,bool with_seg) override;
 };
 #endif
 
@@ -38,7 +38,7 @@ std::vector<float*> YoloDetect::inference() {
   return detRes_;
 }
 
-void YoloDetect::decodeBbox(int imgo_w, int imgo_h,float confidence_threshold) {
+void YoloDetect::decodeBbox(int imgo_w, int imgo_h,float confidence_threshold,bool with_seg) {
   boxes_infer.clear();
   for (int i = 0; i < rows; ++i) {
     float* pitem = detRes_[0] + i * cols;
@@ -59,11 +59,19 @@ void YoloDetect::decodeBbox(int imgo_w, int imgo_h,float confidence_threshold) {
     float height = pitem[3];
     float left = (cx - width * 0.5);
     float top    = (cy - height * 0.5);
-
     float right  = (cx + width * 0.5);
     float bottom = (cy + height * 0.5);
 
-    boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label);
+    if(with_seg){
+        std::vector<float> temp_proto(pitem + 5 + num_classes, pitem + 5 + num_classes + 32);
+        Matrix tmp_cof(1, 32, temp_proto);
+        boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label);
+    }
+    else{
+        boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label);
+    }
+
+
   }
   
 }

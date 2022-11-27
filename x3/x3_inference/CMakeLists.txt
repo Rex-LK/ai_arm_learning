@@ -53,6 +53,6 @@ add_library(matrix SHARED src/matrix.cpp)
 add_executable(yolo_demo sample/yolo_demo.cpp)
 target_link_libraries(yolo_demo ${LINK_libs} matrix)
 
-add_executable(yolov5-seg sample/yolov5-seg.cpp)
-target_link_libraries(yolov5-seg ${LINK_libs} matrix)
+add_executable(seg_demo sample/yolov5-seg.cpp)
+target_link_libraries(seg_demo ${LINK_libs} matrix)
 

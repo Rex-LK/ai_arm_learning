@@ -12,6 +12,22 @@
 #include "opencv2/imgproc.hpp"
 #include "matrix.hpp"
 
+
+namespace matrix{
+    Matrix mygemm(const Matrix& a, const Matrix& b){
+    Matrix c(a.rows(), b.cols());
+    for(int i = 0; i < c.rows(); ++i){
+        for(int j = 0; j < c.cols(); ++j){
+            float summary = 0;
+            for(int k = 0; k < a.cols(); ++k)
+                summary += a(i, k) * b(k, j);
+
+            c(i, j) = summary;
+        }
+    }
+    return c;
+}
+}
 namespace tools{
     long get_current_time()
     {

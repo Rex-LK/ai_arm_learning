@@ -1387,4 +1387,6 @@ detect.h
 /work/ai_arm_learning/x3/x3_inference/sample/detect.h
 yolo_detect.hpp
 /work/ai_arm_learning/x3/x3_inference/sample/yolo_detect.hpp
+common.hpp
+/work/ai_arm_learning/x3/x3_inference/sample/common.hpp
 

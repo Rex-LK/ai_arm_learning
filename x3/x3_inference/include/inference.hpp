@@ -77,7 +77,8 @@ std::vector<float*> Inference::inference() {
   std::vector<float*> res;
   for (int i = 0; i < output_count; i++) {
     hbSysFlushMem(&output_tensors[i].sysMem[0], HB_SYS_MEM_CACHE_INVALIDATE);
-    result = reinterpret_cast<float *>(output->sysMem[i].virAddr);
+    result = reinterpret_cast<float *>(output_tensors[i].sysMem[0].virAddr);
+    // result = reinterpret_cast<float *>(output->sysMem[0].virAddr);
     res.push_back(result);
   }
   return res;
