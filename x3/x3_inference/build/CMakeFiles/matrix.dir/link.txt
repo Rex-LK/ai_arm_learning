@@ -1,0 +1,1 @@
+/bin/c++ -fPIC  -std=c++11   -shared -Wl,-soname,libmatrix.so -o libmatrix.so CMakeFiles/matrix.dir/src/matrix.cpp.o  -L/work/ai_arm_learning/x3/x3_inference/data/deps/x86/dnn_x86/lib  -L/work/ai_arm_learning/x3/x3_inference/data/deps/x86/opencv/lib 

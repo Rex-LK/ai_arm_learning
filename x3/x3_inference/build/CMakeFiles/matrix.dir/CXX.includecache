@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/matrix.hpp
+vector
+-
+initializer_list
+-
+ostream
+-
+vector
+-
+
+/work/ai_arm_learning/x3/x3_inference/src/matrix.cpp
+vector
+-
+iostream
+-
+iomanip
+-
+cmath
+-
+functional
+-
+matrix.hpp
+/work/ai_arm_learning/x3/x3_inference/src/matrix.hpp
+
