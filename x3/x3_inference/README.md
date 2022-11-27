@@ -1,14 +1,14 @@
 ## [旭日3]  yolov5seg实例分割cpp部署代码
 ### 1. 前言
-yolov5-7.0版本继续更新了实例分割的代码，其分割的精度与速度令人惊讶，本文将yolov5-seg模型在x3上允许，并利用矩阵操作的方法对进行部分后处理，同时针对模型有多个输出时，利用从cpp代码如何将分割与检测的代码分别取出来。
+yolov5-7.0版本继续更新了实例分割的代码，其分割的精度与速度令人惊讶，Python代码可看上一个帖子，本文将yolov5-seg模型在x3上运行，并利用矩阵操作的方法进行部分后处理，同时针对模型有多个输出时，利用从cpp代码如何将分割与检测的结果分别取出来。
 ![](yolov5seg.png)
-实例分割原理:[yolact](https://blog.csdn.net/wh8514/article/details/105520870/)
+实例分割原理:https://blog.csdn.net/wh8514/article/details/105520870/
 
-yolov5seg-cpp实现代码:[Yolov5-instance-seg-tensorrt](https://github.com/fish-kong/Yolov5-instance-seg-tensorrt)
+yolov5seg-tensorrt-cpp实现代码:https://github.com/Rex-LK/tensorrt_learning/tree/main/trt_cpp/src/trt/demo-infer/yolov5seg
 
-cpp矩阵实现:[algorithm-cpp](https://github.com/shouxieai/algorithm-cpp)
+cpp矩阵实现:https://github.com/shouxieai/algorithm-cpp
 
-本文测试代码:https://github.com/Rex-LK/tensorrt_learning/tree/main/trt_cpp/src/trt/demo-infer/yolov5seg
+本文测试代码:https://github.com/Rex-LK/ai_arm_learning/tree/master/x3/x3_inference
 ### 2. 实例分割结果
 yolov5-seg的结果分为两部分，一个是检测的结果，维度为25200*177，前85列为每个检测框结果，后32列为每个检测框的mask系数，另外一个是分割结果:原型mask，维度为32 * 160 * 160，实例分割的后处理就是将目标框里面的mask系数与原型mask进行加权求和，从而获得实例分割的效果。
 #### 2.1 检测结果后处理
@@ -24,7 +24,6 @@ vector<float> mask(seg_det, seg_det + segChannels * segWidth * segHeight);
 Matrix seg_proto(segChannels, segWidth * segHeight, mask);
 for (int i = 0; i < box_result.size(); ++i) {
     // 可以将所有的mask系数放在一起，然后利用cuda进行加速计算
-
     // 每个目标框的mask系数 乘以原型mask 并取sigmod
     Matrix resSeg = (mygemm(box_result[i].mask_cofs,seg_proto).exp(-1) + 1.0).power(-1);
     
@@ -36,7 +35,7 @@ for (int i = 0; i < box_result.size(); ++i) {
     // 获取原型mask里面目标框的区域
     Rect temp_rect = box_result[i].box;
     // 将目标框区域 大于0.5的值变为255
-    cv::Mat binaryMat;
+    Mat binaryMat;
     inRange(resMat(temp_rect), 0.5, 1, binaryMat);
     box_result[i].boxMask = binaryMat;
     // cv::imwrite(to_string(i) + "_.jpg", b);
@@ -74,7 +73,7 @@ public:
 ### 3. 测试
 下载本代码
 
-```shell
+```
 cd x3_inference
 mkair build && cd build 
 cmake .. && make -j
