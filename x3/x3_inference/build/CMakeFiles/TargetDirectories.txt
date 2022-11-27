@@ -1,5 +1,0 @@
-/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/seg_demo.dir
-/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/edit_cache.dir
-/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/matrix.dir
-/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/rebuild_cache.dir
-/work/ai_arm_learning/x3/x3_inference/build/CMakeFiles/yolo_demo.dir
