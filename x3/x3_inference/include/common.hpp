@@ -67,18 +67,16 @@ namespace detection{
 
         float Sigmoid(float x) { return 1.0f / (1.0f + exp(-x)); }
         float Tanh(float x) { return 2.0f / (1.0f + exp(-2 * x)) - 1; }
-        struct Bbox {
+        struct Bbox{
             float left, top, right, bottom, confidence;
             int class_label;
             cv::Rect box;
             cv::Mat boxMask;
             Matrix mask_cofs;
             Bbox() = default;
-            Bbox(float left, float top, float right, float bottom, float confidence,
-                    int class_label): 
-                    left(left), top(top),right(right),bottom(bottom),confidence(confidence),
-                    class_label(class_label) {}
-            };
+            Bbox(float left, float top, float right, float bottom, float confidence, int class_label, Matrix mask_cofs, cv::Rect box)
+                : left(left), top(top), right(right), bottom(bottom), confidence(confidence), class_label(class_label), mask_cofs(mask_cofs), box(box){}
+        };
 
         auto iou = [](const Bbox& a, const Bbox& b) {
             float cross_left = std::max(a.left, b.left);

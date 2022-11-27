@@ -96,33 +96,24 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < boxes_res.size(); ++i)
     {
-        // 可以将所有的mask系数放在一起，然后利用cuda或者其他库进行加速计算
-        // 每个目标框的mask系数 乘以原型mask 并取sigmod
-        cout << boxes_res[i].mask_cofs.cols_ << endl;
-        cout << boxes_res[i].mask_cofs.rows_ << endl;
         
+        Matrix resSeg = (mygemm(boxes_res[i].mask_cofs,seg_proto).exp(-1) + 1.0).power(-1);
 
-        Matrix resSeg = (mygemm(boxes_res[i].mask_cofs,seg_proto));
-
-
-        // Matrix resSeg = (mygemm(boxes_res[i].mask_cofs,seg_proto).exp(-1) + 1.0).power(-1);
-
-        // Mat resMat(resSeg.data_);
+        Mat resMat(resSeg.data_);
 
 
-        // resMat = resMat.reshape(0, {segHeight, segWidth});
-        // // 如果图片预处理为直接resize,那么计算出来的resMat可以直接缩放回原图，
-        // // 如果是填充黑边的resize，可以参考原代码将原型mask恢复到原图大小
-        // resize(resMat, resMat, Size(INPUT_H,INPUT_W), INTER_NEAREST);
-        // // 获取原型mask里面目标框的区域
-        // Rect temp_rect = boxes_res[i].box;
-        // // 将目标框区域 大于0.5的值变为255
-        // cv::Mat binaryMat;
-        // inRange(resMat(temp_rect), 0.5, 1, binaryMat);
-		// boxes_res[i].boxMask = binaryMat;
-        // // cv::imwrite(to_string(i) + "_.jpg", b);
+        resMat = resMat.reshape(0, {segHeight, segWidth});
+        // 如果图片预处理为直接resize,那么计算出来的resMat可以直接缩放回原图，
+        // 如果是填充黑边的resize，可以参考原代码将原型mask恢复到原图大小
+        resize(resMat, resMat, Size(INPUT_H,INPUT_W), INTER_NEAREST);
+        // 获取原型mask里面目标框的区域
+        Rect temp_rect = boxes_res[i].box;
+        // 将目标框区域 大于0.5的值变为255
+        cv::Mat binaryMat;
+        inRange(resMat(temp_rect), 0.5, 1, binaryMat);
+		boxes_res[i].boxMask = binaryMat;
+        // cv::imwrite(to_string(i) + "_.jpg", b);
     }
-    // 渲染
-    // DrawPred(bgrInferMat, boxes_res);
-    // cv::imwrite("output-seg.jpg", bgrInferMat);
+    DrawPred(bgrInferMat, boxes_res);
+    cv::imwrite("output-seg.jpg", bgrInferMat);
 }

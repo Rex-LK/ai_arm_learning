@@ -62,16 +62,11 @@ void YoloDetect::decodeBbox(int imgo_w, int imgo_h,float confidence_threshold,bo
     float right  = (cx + width * 0.5);
     float bottom = (cy + height * 0.5);
 
-    if(with_seg){
-        std::vector<float> temp_proto(pitem + 5 + num_classes, pitem + 5 + num_classes + 32);
-        Matrix tmp_cof(1, 32, temp_proto);
-        boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label);
-    }
-    else{
-        boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label);
-    }
+    cv::Rect rect(left,top,width,height);
 
-
+    std::vector<float> temp_proto(pitem + 5 + num_classes, pitem + 5 + num_classes + 32);
+    Matrix tmp_cof(1, 32, temp_proto);
+    boxes_infer.emplace_back(left, top, right, bottom, confidence, (float)label,tmp_cof,rect);
   }
   
 }
