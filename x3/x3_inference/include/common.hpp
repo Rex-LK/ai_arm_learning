@@ -1,8 +1,10 @@
 #ifndef __COMMON__
 #define __COMMON__
 
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
-
 #include <iostream>
 #include <string>
 #include <vector>
