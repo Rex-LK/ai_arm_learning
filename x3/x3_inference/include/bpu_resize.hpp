@@ -47,8 +47,8 @@ public:
 
     }
     ~BpuResize(){
-        free_tensor(&input_tensor);
-        free_tensor(&output_tensor);
+        hbSysFreeMem(&input_tensor.sysMem[0]);
+        hbSysFreeMem(&output_tensor.sysMem[0]);
     }
     void copy_image_2_input_tensor(uint8_t *yuv_data,hbDNNTensor *tensor){
         uint8_t *data0 = reinterpret_cast<uint8_t *>(tensor->sysMem[0].virAddr);
