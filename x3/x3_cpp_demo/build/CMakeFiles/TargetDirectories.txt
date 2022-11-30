@@ -1,3 +1,0 @@
-/work/ai_arm_learning/x3/x3_cpp_demo/build/CMakeFiles/rebuild_cache.dir
-/work/ai_arm_learning/x3/x3_cpp_demo/build/CMakeFiles/run_x3j.dir
-/work/ai_arm_learning/x3/x3_cpp_demo/build/CMakeFiles/edit_cache.dir
