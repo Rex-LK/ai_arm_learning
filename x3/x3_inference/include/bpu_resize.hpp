@@ -32,7 +32,10 @@ class BpuResize{
 // 固定尺寸 支持 brg rgb yuv420 nv12
 
 public:
-    BpuResize(int input_w,int input_h,int output_w,int output_h,imageType imgType){
+    BpuResize(const BpuResize& other) = delete; 
+    BpuResize& operator = (const BpuResize& other) = delete;
+
+    explicit BpuResize(int input_w,int input_h,int output_w,int output_h,imageType imgType){
         this->imgType = imgType;
         inputW = input_w;   
         outputW = output_w; 
@@ -42,8 +45,8 @@ public:
             dataType = HB_DNN_IMG_TYPE_Y;
             layout = HB_DNN_LAYOUT_NCHW;
         }
-        prepare_input_tensor(inputH, inputW, &input_tensor, stride, input_image_length);
-        prepare_output_tensor(outputH, outputW, &output_tensor,output_image_length);
+        prepare_input_tensor();
+        prepare_output_tensor();
 
     }
     ~BpuResize(){
@@ -73,12 +76,58 @@ public:
         memcpy(resizedYuvMat.data,output_tensor.sysMem[0].virAddr,outputW * outputH);
         return;
     }
+
+    int32_t prepare_input_tensor() {
+        auto &properties = this->input_tensor.properties;
+        properties.tensorType = HB_DNN_IMG_TYPE_Y;
+        properties.tensorLayout = HB_DNN_LAYOUT_NCHW;
+        auto &valid_shape = properties.validShape;
+        valid_shape.numDimensions = 4;
+        valid_shape.dimensionSize[0] = 1;
+        valid_shape.dimensionSize[1] = 1;
+        valid_shape.dimensionSize[2] = inputH;
+        valid_shape.dimensionSize[3] = inputW;
+
+        stride = ALIGN_16(inputW);
+        auto &aligned_shape = properties.alignedShape;
+        aligned_shape.numDimensions = 4;
+        aligned_shape.dimensionSize[0] = 1;
+        aligned_shape.dimensionSize[1] = 1;
+        aligned_shape.dimensionSize[2] = inputH;
+        aligned_shape.dimensionSize[3] = stride;
+
+        input_image_length = aligned_shape.dimensionSize[1] *
+                            aligned_shape.dimensionSize[2] *
+                            aligned_shape.dimensionSize[3];
+        hbSysAllocCachedMem(&this->input_tensor.sysMem[0], input_image_length);
+        return 0;
+    }
+
+    int32_t prepare_output_tensor() {
+        auto &properties = this->output_tensor.properties;
+        properties.tensorType = HB_DNN_IMG_TYPE_Y;
+        properties.tensorLayout = HB_DNN_LAYOUT_NCHW;
+
+        auto &valid_shape = properties.validShape;
+        valid_shape.numDimensions = 4;
+        valid_shape.dimensionSize[0] = 1;
+        valid_shape.dimensionSize[1] = 1;
+        valid_shape.dimensionSize[2] = outputH;
+        valid_shape.dimensionSize[3] = outputW;
+
+        auto &aligned_shape = properties.alignedShape;
+        aligned_shape = valid_shape;
+        output_image_length = outputH * outputW;
+        hbSysAllocCachedMem(&this->output_tensor.sysMem[0], output_image_length);
+        return 0;
+    }
+
 private:
     int inputW;
     int inputH;
     int outputW;
     int outputH;
-
+    int shape_0, shape_1, shape_2, shape_3;
     imageType imgType = imageType::yuv420;
     hbDNNDataType dataType;
     hbDNNTensorLayout layout;
@@ -98,61 +147,4 @@ private:
 
 
 
-int32_t prepare_input_tensor(int image_height,
-                           int image_width,
-                           hbDNNTensor *tensor,int& stride,int&input_image_length) {
-  auto &properties = tensor->properties;
-  properties.tensorType = HB_DNN_IMG_TYPE_Y;
-  properties.tensorLayout = HB_DNN_LAYOUT_NCHW;
-  auto &valid_shape = properties.validShape;
-  valid_shape.numDimensions = 4;
-  valid_shape.dimensionSize[0] = 1;
-  valid_shape.dimensionSize[1] = 1;
-  valid_shape.dimensionSize[2] = image_height;
-  valid_shape.dimensionSize[3] = image_width;
 
-  // Align by 16 bytes
-  stride = ALIGN_16(image_width);
-  auto &aligned_shape = properties.alignedShape;
-  aligned_shape.numDimensions = 4;
-  aligned_shape.dimensionSize[0] = 1;
-  aligned_shape.dimensionSize[1] = 1;
-  aligned_shape.dimensionSize[2] = image_height;
-  aligned_shape.dimensionSize[3] = stride;
-
-  input_image_length = aligned_shape.dimensionSize[1] *
-                     aligned_shape.dimensionSize[2] *
-                     aligned_shape.dimensionSize[3];
-  hbSysAllocCachedMem(&tensor->sysMem[0], input_image_length);
-  return 0;
-}
-
-int32_t prepare_output_tensor(int image_height,
-                           int image_width,
-                           hbDNNTensor *tensor,int&output_image_length) {
-  auto &properties = tensor->properties;
-  properties.tensorType = HB_DNN_IMG_TYPE_Y;
-  properties.tensorLayout = HB_DNN_LAYOUT_NCHW;
-
-  auto &valid_shape = properties.validShape;
-  valid_shape.numDimensions = 4;
-  valid_shape.dimensionSize[0] = 1;
-  valid_shape.dimensionSize[1] = 1;
-  valid_shape.dimensionSize[2] = image_height;
-  valid_shape.dimensionSize[3] = image_width;
-
-  auto &aligned_shape = properties.alignedShape;
-  aligned_shape = valid_shape;
-  output_image_length = image_height * image_width;
-  hbSysAllocCachedMem(&tensor->sysMem[0], output_image_length);
-  return 0;
-}
-
-
-
-
-
-int32_t free_tensor(hbDNNTensor *tensor) {
-  hbSysFreeMem(&(tensor->sysMem[0]));
-  return 0;
-}
