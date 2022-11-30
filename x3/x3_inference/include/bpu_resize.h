@@ -45,14 +45,8 @@ public:
     }
     void copy_image_2_input_tensor(uint8_t *yuv_data,hbDNNTensor *tensor){
         uint8_t *data0 = reinterpret_cast<uint8_t *>(tensor->sysMem[0].virAddr);
-        for (int h = 0; h < inputH; ++h) {
-            auto *raw = data0 + h * this->stride;
-            for (int w = 0; w < inputW; ++w) {
-            *raw++ = *yuv_data++;
-        }
-  }
-
-  hbSysFlushMem(&(tensor->sysMem[0]), HB_SYS_MEM_CACHE_CLEAN);
+        memcpy(data0, yuv_data, input_image_length);
+        hbSysFlushMem(&(tensor->sysMem[0]), HB_SYS_MEM_CACHE_CLEAN);
     }
 
     void YuvResize(cv::Mat ori_yuv,cv::Mat resizedYuvMat){

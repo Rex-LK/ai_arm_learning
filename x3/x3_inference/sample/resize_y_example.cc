@@ -14,6 +14,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/opencv.hpp"
 #include "time.h"
+#include "common.hpp"
 /**
  * Align by 16
  */
@@ -49,7 +50,8 @@ int main(int argc, char **argv) {
 
 
   // Prepare input tensor
-  cv::Mat gray = cv::imread("../images/kite.jpg");
+  cv::Mat gray = cv::imread("../../data/images/kite.jpg");
+  cv::resize(gray, gray, cv::Size(1920, 1080));
   cv::Mat yuv;
   cvtColor(gray, yuv, cv::COLOR_BGR2YUV_I420);
 
@@ -116,12 +118,17 @@ int prepare_y_tensor(uint8_t *image_data,
                      aligned_shape.dimensionSize[3];
   hbSysAllocCachedMem(&tensor->sysMem[0], image_length);
   uint8_t *data0 = reinterpret_cast<uint8_t *>(tensor->sysMem[0].virAddr);
-  for (int h = 0; h < image_height; ++h) {
-    auto *raw = data0 + h * stride;
-    for (int w = 0; w < image_width; ++w) {
-      *raw++ = *image_data++;
-    }
+  long t1 = tools::get_current_time();
+  for (int h = 0; h < image_height; ++h)
+  {
+      auto *raw = data0 + h * stride;
+      for (int w = 0; w < image_width; ++w)
+      {
+          *raw++ = *image_data++;
+      }
   }
+  long t2 = tools::get_current_time();
+  std::cout << t2 - t1 << std::endl;
 
   hbSysFlushMem(&(tensor->sysMem[0]), HB_SYS_MEM_CACHE_CLEAN);
   return 0;

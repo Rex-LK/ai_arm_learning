@@ -24,18 +24,25 @@ int32_t free_tensor(hbDNNTensor *tensor);
 enum class imageType : int {
     BRG = 0,
     RGB = 1,
-    NV12 = 2,
+    yuv420 = 2,
+    NV12 = 3,
 };
 
 class BpuResize{
+// 固定尺寸 支持 brg rgb yuv420 nv12
 
 public:
-    BpuResize(int input_w,int input_h,int output_w,int output_h){
-        inputW = input_w;   // 640
-        inputH = input_h;   // 360
-        outputW = output_w; // 2048
-        outputH = output_h; // 1024 * 1.5 
-        prepare_input_tensor(inputH, inputW, &input_tensor,stride,input_image_length);
+    BpuResize(int input_w,int input_h,int output_w,int output_h,imageType imgType){
+        this->imgType = imgType;
+        inputW = input_w;   
+        outputW = output_w; 
+        if(imgType == imageType::yuv420){
+            inputH = input_h * 1.5;
+            outputH = output_h * 1.5;
+            dataType = HB_DNN_IMG_TYPE_Y;
+            layout = HB_DNN_LAYOUT_NCHW;
+        }
+        prepare_input_tensor(inputH, inputW, &input_tensor, stride, input_image_length);
         prepare_output_tensor(outputH, outputW, &output_tensor,output_image_length);
 
     }
@@ -45,14 +52,8 @@ public:
     }
     void copy_image_2_input_tensor(uint8_t *yuv_data,hbDNNTensor *tensor){
         uint8_t *data0 = reinterpret_cast<uint8_t *>(tensor->sysMem[0].virAddr);
-        for (int h = 0; h < inputH; ++h) {
-            auto *raw = data0 + h * this->stride;
-            for (int w = 0; w < inputW; ++w) {
-            *raw++ = *yuv_data++;
-        }
-  }
-
-  hbSysFlushMem(&(tensor->sysMem[0]), HB_SYS_MEM_CACHE_CLEAN);
+        memcpy(data0, yuv_data, input_image_length);
+        hbSysFlushMem(&(tensor->sysMem[0]), HB_SYS_MEM_CACHE_CLEAN);
     }
 
     void YuvResize(cv::Mat ori_yuv,cv::Mat resizedYuvMat){
@@ -77,6 +78,10 @@ private:
     int inputH;
     int outputW;
     int outputH;
+
+    imageType imgType = imageType::yuv420;
+    hbDNNDataType dataType;
+    hbDNNTensorLayout layout;
 
     hbDNNTensor input_tensor;
     hbDNNTensor output_tensor;
