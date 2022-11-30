@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(test)
 
-# SET(tar x3)
+SET(tar x3)
 if(tar)
     message(STATUS "build arm")
     SET(CMAKE_C_COMPILER /opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc)
@@ -12,9 +12,9 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 
 if(tar)
-    set(DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data/deps/aarch64/) 
+    set(DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../data/deps/aarch64/) 
 else()
-    set(DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data/deps/x86/) 
+    set(DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../data/deps/x86/) 
 endif()
 
 add_definitions(-w)
@@ -56,3 +56,5 @@ target_link_libraries(yolo_demo ${LINK_libs} matrix)
 add_executable(seg_demo sample/yolov5-seg.cpp)
 target_link_libraries(seg_demo ${LINK_libs} matrix)
 
+add_executable(resize_demo sample/resize_demo.cpp)
+target_link_libraries(resize_demo ${LINK_libs} matrix)

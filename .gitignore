@@ -1,8 +1,8 @@
+x3/data
+x3/images
+
 x3/x3_cpp_demo/_vscode
 x3/x3_cpp_demo/build
-x3/x3_cpp_demo/deps
-x3/x3_cpp_demo/images
 
 x3/x3_inference/.vscode
 x3/x3_inference/build
-x3/x3_inference/data
