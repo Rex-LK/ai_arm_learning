@@ -1,6 +1,6 @@
 ## [旭日x3] 动手实践之bpu_rezie以及简化cpp编译流程
 ### 1、前言
-在x3开发者手册里面的利用bpu进行resize的操作,于是想着在板端上测试一下，对比了一下bpu-resize与opencv-resize的时间差异。同时之前一直是在docker环境下进行编译的,稍显麻烦,而cpp编译只依赖交叉编译工具和依赖文件,交叉编译工具在docker下的/opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu下,将它复制出来到主机上,就可以在不依赖docker进行编译了,如果编译起来有问题,也可以从本文的百度云链接获得完整的依赖文件以及源代码。
+在x3开发者手册里面的利用bpu进行resize的操作,便在板端上进行了测试,对比了一下bpu-resize与opencv-resize的时间差异,而且还能在裁剪的同时对裁剪的区域进行缩放。而且之前一直是在docker环境下进行编译的,稍显麻烦,而cpp编译只依赖交叉编译工具和依赖文件,交叉编译工具在docker下的/opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu下,将它复制出来到主机上,就可以在不依赖docker进行编译了,如果编译起来有问题,也可以从本文的百度云链接获得完整的依赖文件以及源代码。
 本文测试代码:
 百度云完整依赖文件以及源代码:
 #### 2、简化cpp编译环境
@@ -71,7 +71,7 @@ export LD_LIBRARY_PATH=..../ai_arm_learning/x3/data/deps/x86/dnn_x86/lib   ## ..
         cv::imwrite("test_resized_rgb.png", ResizedBgrMat);
     }
 ```
-实现resize的头文件 bpu_resize.hpp
+实现bpu-resize的头文件 bpu_resize.hpp,对裁剪的区域进行缩放有利于給后续的模型进行预测,当然这个步骤可以采用官方的 roiInfer接口来进行,但是roiInfer 有一些限制条件,比如对裁剪区域的高宽必须小于256。
 ```cpp
 class BpuResize{
 public:
@@ -87,4 +87,4 @@ public:
 }
 ```
 ### 4、总结
-本次测试简化了cpp遍历流程,为后续的上板测试省略的一定的步骤,同时对bpu的resize的接口进行了测试,发现如果原图为1920*1080,resize后的图片大小为640\*640时，opencv的resize需要40+ms,而bpu接口的时间只需要25+ms,但目前从小图放大时,opencv的resize更快一些,不知道这是否属于正常现象。
+本次测试简化了cpp遍历流程,为后续的上板测试省略的一定的步骤,同时对bpu的resize的接口进行了测试,并且测试了裁剪缩放的功能,发现如果原图为1920*1080,resize后的图片大小为640\*640时，opencv的resize需要40+ms,而bpu接口的时间只需要25+ms,但目前从小图放大时,opencv的resize更快一些,不知道这是否属于正常现象。
