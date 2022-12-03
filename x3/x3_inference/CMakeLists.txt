@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 project(test)
 
-SET(tar x3)
+# SET(tar x3)
 if(tar)
     message(STATUS "build arm")
-    SET(CMAKE_C_COMPILER /opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc)
-    SET(CMAKE_CXX_COMPILER /opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-g++)
+    SET(CMAKE_C_COMPILER ${CMAKE_CURRENT_SOURCE_DIR}/../data/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc)
+    SET(CMAKE_CXX_COMPILER ${CMAKE_CURRENT_SOURCE_DIR}/../data/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-g++)
 else()
     message(STATUS "build x86")
 endif()
@@ -58,9 +58,3 @@ target_link_libraries(seg_demo ${LINK_libs} matrix)
 
 add_executable(resize_demo sample/resize_demo.cpp)
 target_link_libraries(resize_demo ${LINK_libs} matrix)
-
-add_executable(resize_y_example sample/resize_y_example.cc)
-target_link_libraries(resize_y_example ${LINK_libs} matrix)
-
-add_executable(resize_bgr sample/resize_bgr.cc)
-target_link_libraries(resize_bgr ${LINK_libs} matrix)

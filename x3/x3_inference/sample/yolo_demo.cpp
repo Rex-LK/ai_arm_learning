@@ -10,7 +10,7 @@ using namespace tools;
 
 
 int main(int argc, char* argv[]) {
-    string image_path = "../data/images/street.jpg";
+    string image_path = "../../data/images/street.jpg";
 
     Mat imageOri = imread(image_path);
 
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    string model_root_path = "../data/model_zoo/";
+    string model_root_path = "../../data/model_zoo/";
     int img_oh = imageOri.rows;
     int img_ow = imageOri.cols;
     Detect *det;
