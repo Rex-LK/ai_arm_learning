@@ -4,7 +4,7 @@
 
 实际上很早之前yolov5就发布了实例分割的版本，前几天更新到了yolov5-7.0版本，其中实例分割的速度与精度实在过于惊艳，其中实例分割的思想与yolact一致，于是便想先用python代码在x3上进行测试。
 
-![](yolov5seg.png) 
+![](imgs/yolov5seg.png) 
 
 onnxruntime推理代码参考: https://blog.csdn.net/yangjinyi1314/article/details/127101492
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
 #### 2.3 实例分割结果
 
-<img src="masks_det.jpg" alt="masks_det" style="zoom:50%;" />
+<img src="imgs/masks_det.jpg" alt="masks_det" style="zoom:50%;" />
 
 可以看到效果还是很不错的，这个结果是采用yolov5n模型进行测试，如果使用yolo5s、m、l等大模型精度会更高。
 

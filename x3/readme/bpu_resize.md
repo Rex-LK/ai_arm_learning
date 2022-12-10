@@ -1,9 +1,9 @@
 ## [旭日x3] 动手实践之bpu_rezie以及简化cpp编译流程
 ### 1、前言
 在x3开发者手册里面的利用bpu进行resize的操作,便在板端上进行了测试,对比了一下bpu-resize与opencv-resize的时间差异,而且还能在裁剪的同时对裁剪的区域进行缩放。而且之前一直是在docker环境下进行编译的,稍显麻烦,而cpp编译只依赖交叉编译工具和依赖文件,交叉编译工具在docker下的/opt/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu下,将它复制出来到主机上,就可以在不依赖docker进行编译了,如果编译起来有问题,也可以从本文的百度云链接获得完整的依赖文件以及源代码。
-本文测试代码:
-百度云完整依赖文件以及源代码:
-#### 2、简化cpp编译环境
+本文测试代码:https://github.com/Rex-LK/ai_arm_learning
+百度云完整依赖文件以及源代码:https://pan.baidu.com/s/1x34kaRseh8YXMJ-vmFhxEg?pwd=c6cn 提取码: c6cn
+### 2、简化cpp编译环境
 在本机中export交叉编译工具的路径
 ```
 export LD_LIBRARY_PATH=..../ai_arm_learning/x3/datagcc-ubuntu-9.3.0-2020. 03-x86_64-aarch64-linux-gnu/lib/x86_64-linux-gnu     ## ....为实际路径
@@ -18,23 +18,23 @@ export LD_LIBRARY_PATH=..../ai_arm_learning/x3/data/deps/x86/dnn_x86/lib   ## ..
 ```
 有了上面的过程，就可以愉快的不依赖docker进行交叉编译了，下面就开始本文的正题吧。
 
-#### 3、使用bpu进行resize
+### 3、使用bpu进行resize
 在x3_inference/sample/resize_demo.cpp中实现了三种不同图片格式的resize方法,yuv420、rgb、bgr,最终调用的api接口为 hbDNNResize
 ```cpp
     string image_path = "../../data/images/kite.jpg";
     string test_case = argv[1];
     int oimg_w = 1920;
     int oimg_h = 1080;
-    auto bgrImg = cv::imread(image_path);
+    auto bgrImg = imread(image_path);
 
     int resized_w = 640;
     int resized_h = 640;
 
-    cv::resize(bgrImg,bgrImg,Size(oimg_w,oimg_h));
+    resize(bgrImg,bgrImg,Size(oimg_w,oimg_h));
 
     if(test_case == "YUV420"){
         Mat yuvImg;
-        cv::cvtColor(bgrImg, yuvImg, cv::COLOR_BGR2YUV_I420);
+        cvtColor(bgrImg, yuvImg, COLOR_BGR2YUV_I420);
         BpuResize* resizer = new BpuResize(oimg_w,oimg_h,resized_w,resized_h,imageType::YUV420);
         long t1 = tools::get_current_time();
         float* res = resizer->Resize(yuvImg);
@@ -42,9 +42,9 @@ export LD_LIBRARY_PATH=..../ai_arm_learning/x3/data/deps/x86/dnn_x86/lib   ## ..
         cout <<"bpu resize:" <<t2 - t1 << endl;
         Mat ResizedYuvMat(resized_h * 1.5, resized_w, CV_8UC1);
         memcpy(ResizedYuvMat.data,res,resized_w * resized_h * 1.5);
-        cv::Mat ResizedBgrMat;
-        cv::cvtColor(ResizedYuvMat,ResizedBgrMat, cv::COLOR_YUV2BGR_I420);
-        cv::imwrite("test_resized_yuv.png", ResizedBgrMat);
+        Mat ResizedBgrMat;
+        cvtColor(ResizedYuvMat,ResizedBgrMat, COLOR_YUV2BGR_I420);
+        imwrite("test_resized_yuv.png", ResizedBgrMat);
     }
     else if (test_case == "BGR"){
         BpuResize* resizer = new BpuResize(oimg_w,oimg_h,resized_w,resized_h,imageType::BGR);
@@ -54,11 +54,11 @@ export LD_LIBRARY_PATH=..../ai_arm_learning/x3/data/deps/x86/dnn_x86/lib   ## ..
         cout <<"bpu resize:" <<t2 - t1 << endl;
         Mat ResizedBgrMat(resized_h , resized_w, CV_8UC3);
         memcpy(ResizedBgrMat.data,res,resized_w * resized_h * 3);
-        cv::imwrite("test_resized_bgr.png", ResizedBgrMat);
+        imwrite("test_resized_bgr.png", ResizedBgrMat);
     }
     else if (test_case == "RGB"){
-        cv::Mat rgbImg;
-        cv::cvtColor(bgrImg, rgbImg, cv::COLOR_BGR2RGB);
+        Mat rgbImg;
+        cvtColor(bgrImg, rgbImg, COLOR_BGR2RGB);
         BpuResize* resizer = new BpuResize(oimg_w,oimg_h,resized_w,resized_h,imageType::RGB);
         long t1 = tools::get_current_time();
         float* res = resizer->Resize(rgbImg,{0,0,2000,2000});
@@ -66,9 +66,9 @@ export LD_LIBRARY_PATH=..../ai_arm_learning/x3/data/deps/x86/dnn_x86/lib   ## ..
         cout <<"bpu resize:" <<t2 - t1 << endl;
         Mat ResizedRgbMat(resized_h , resized_w, CV_8UC3);
         memcpy(ResizedRgbMat.data,res,resized_w * resized_h * 3);
-        cv::Mat ResizedBgrMat;
-        cv::cvtColor(ResizedRgbMat,ResizedBgrMat, cv::COLOR_RGB2BGR);
-        cv::imwrite("test_resized_rgb.png", ResizedBgrMat);
+        Mat ResizedBgrMat;
+        cvtColor(ResizedRgbMat,ResizedBgrMat, COLOR_RGB2BGR);
+        imwrite("test_resized_rgb.png", ResizedBgrMat);
     }
 ```
 实现bpu-resize的头文件 bpu_resize.hpp,对裁剪的区域进行缩放有利于給后续的模型进行预测,当然这个步骤可以采用官方的 roiInfer接口来进行,但是roiInfer 有一些限制条件,比如对裁剪区域的高宽必须小于256。
@@ -80,7 +80,7 @@ public:
     explicit BpuResize(const int input_w, const int input_h, const int output_w, const int output_h, const imageType imgType);
     ~BpuResize();
     void copy_image_2_input_tensor(uint8_t *image_data,hbDNNTensor *tensor);
-    float *Resize(cv::Mat ori_img, const std::initializer_list<int> crop);
+    float *Resize(Mat ori_img, const std::initializer_list<int> crop);
     int32_t prepare_input_tensor();
     int32_t prepare_output_tensor();
     //...
