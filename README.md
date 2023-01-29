@@ -1,5 +1,6 @@
 ### 前言 
 本项目用于个人记录在arm开发板上进行ai视觉开发的一些过程以及经验，便于日后进行回顾，本项目所有的简介在ai_arm_learning/x3/readme/里面,如果有问题或者任何建议,都可以加v信:Rex1586662742进行提出,后面数字为qq。
+完整的代码、模型见百度云链接: https://pan.baidu.com/s/17SFQCUM5M-WeWFlI9_9e4Q?pwd=gfy8 提取码: gfy8
 
 ### 日志记录
 
