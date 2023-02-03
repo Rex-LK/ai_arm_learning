@@ -487,11 +487,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--imgpath',
                         type=str,
-                        default="bus.jpg",
+                        default="/home/rex/Desktop/cv_demo/tensorrtx-master/yolov5/samples/zidane.jpg",
                         help="image path")
     parser.add_argument('--modelpath',
                         type=str,
-                        default="yolov5n-seg.onnx",
+                        default="/home/rex/Desktop/cv_demo/yolov5-seg/yolov5s-seg.onnx",
                         help="model path")
     parser.add_argument('--confThreshold',
                         default=0.25,
