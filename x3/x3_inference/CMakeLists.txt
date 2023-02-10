@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(test)
 
-# SET(tar x3)
+SET(tar x3)
 if(tar)
     message(STATUS "build arm")
     SET(CMAKE_C_COMPILER ${CMAKE_CURRENT_SOURCE_DIR}/../../data/gcc-ubuntu-9.3.0-2020.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc)

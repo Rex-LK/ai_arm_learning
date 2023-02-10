@@ -3,6 +3,9 @@
 完整的代码、模型见百度云链接: https://pan.baidu.com/s/193hnW7jm5ELw6nEkaKnwsw?pwd=mjgt 提取码: mjgt
 
 ### 日志记录
+
+2023-0210:旭日x3->增加YOLOP模型的在x3上的部署
+
 2023-0203:旭日x3->增加paddleocr模型的在x3上的部署
 
 2022-1210:旭日x3->ocr中的dbnet以及crnn模型的实现
